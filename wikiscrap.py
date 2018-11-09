@@ -1,3 +1,8 @@
+'''
+Purpose: To sdrap wikipedia and validate the input and feed it to a mysql database
+By: Shivanshu
+'''
+
 import mysql.connector
 import wikipedia
 import datetime

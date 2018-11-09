@@ -1,3 +1,9 @@
+'''
+Purpose: To check whether the given string pattern is rotated or not
+Ex: efabcd is a rotated ver of abcdaef
+By: Shivanshu
+'''
+
 def rotationCheck(s1,s2):
   if s1==s2: return 1
   l=len(s2)

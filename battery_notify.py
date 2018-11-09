@@ -1,6 +1,4 @@
-
 '''
-This code will notify user is battery goes beyond certain level
 Purpose: Currently my notebook shuts down abnormally after 50% battery,
 Hence I have created a script that will notify me as soon as battery charge reaches 55%
 Later I converted this file to exe using "pyinstaller -w scriptname.py command",

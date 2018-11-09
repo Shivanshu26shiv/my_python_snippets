@@ -1,3 +1,8 @@
+'''
+Purpose: To take screenshots after specific time interval and save it
+By: Shivanshu
+'''
+
 from threading import Timer
 import pyautogui
 import random
