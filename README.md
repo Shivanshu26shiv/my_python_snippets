@@ -1,4 +1,4 @@
 # pythoneg
 Fun with python
 
-This rep was created when I started taking interest in python :)
+This rep has few of the snippets I created in leisure :)
