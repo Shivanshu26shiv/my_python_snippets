@@ -1,3 +1,26 @@
+'''
+Question:
+
+We have a squad of 20 probables - from which we have to select the playing 11, and the order at which they go into bat and bowl. 
+Read their stats for the last 10 matches from the excel sheet attached ('Team_stats' tab)
+
+Here are the rules -
+
+1. The team should have 5 batsmen, 5 bowlers and 1 all rounder (a player who can both bat and bowl). A player can be categorized in only one of these 3 options
+2. A player qualifies as a batsman if his average (runs scored/matches played) is above 15. The more runs scored - the more the probability to get in
+3. A player qualifies as a bowler if he has taken more than 5 wickets. The more wickets taken - the more the probability to get in
+4. A player qualifies as an allrounder if he has taken more than 7 wickets and his average is more than 10.
+5. Batting order is decided by the number of runs scored (descending), not the average.
+6. Bowling order is decided by this rule - 2 fast bowlers to start with, then two spinners, and then one fast bowler and the all rounder. The order within them will be decided by the number of wickets taken.
+7. The team should consist the captain and the wicketkeeper
+
+Your python script should output the following -
+- the 20 probables
+- the playing 11
+- the batting order (with 'captain' and 'wicketkeeper' in parenthesis besides the player's name)
+- the bowling order
+'''
+
 from xlrd import open_workbook
 from collections import OrderedDict
 
