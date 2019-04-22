@@ -1,3 +1,24 @@
+'''
+Question:
+
+Read the data in the tab 'Ads Data' in the excel. It contains performance data for some ads. The objective is to change the bids, budgets and status of these ads following the below rules -
+
+1. Only ads with the status 'Active' to be changed.
+2. The Target CPR (cost per registration) for the account is £4. For any ad with CPR < £3, increase bid by 12% and budget by 12% if spend is <= £200, and increase bid by 18% and budget by 18% if spend is > £200
+3. For any ad with £3 <= CPR < £4, increase bid by 10% and budget by 10%
+4. For any ad with £4 <= CPR < £5.5, decrease bid by 10% and budget by 15%
+5. For any ad with £4 <= CPR < £5.5, decrease bid by 10% and budget by 15%
+6. For any ad with £5.5 <= CPR < £8, decrease bid by 20% and budget by 25%
+7. For any ad with £8 <= CPR, make the ad inactive
+8 . If the ad name consists 'E', add 15% to the bid
+9. Maximum bid an ad can have = £6, minimum bid = £3
+10. Maximum budget an ad can have = £150, minimum budget = £10
+11. If the amount spend for any ad <= 1% of (total spend for all the ads), do not increase the budget, only increase bid by 5%
+12. If the ad resulted in any purchases, multiply the budget by 1.5
+13. Add the resulting 'new bids', 'new budgets' and 'new status' columns to the sheet and send in the new updated sheet in your response.
+
+'''
+
 import xlwt
 from xlwt import Workbook
 from xlrd import open_workbook
