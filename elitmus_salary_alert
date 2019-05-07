@@ -1,0 +1,103 @@
+import json
+import urllib
+import yagmail
+import datetime
+import requests
+from bs4 import BeautifulSoup
+from collections import OrderedDict
+
+
+'''
+# Name: Elitmus salary alert - sends elitmus active job details via mail, based on specified salary filter
+# Python version : 2.7
+# Uses text file 'google_app_pw.txt' which will have email-id in the 1st line &
+# google app sign-in password in 2nd
+# Changes: apart from above file, one needs to change variable 'salary_expected'
+# To schedule, one can use Windows task scheduler
+'''
+
+salary_expected = 800000 # 5L means star_count is 2+
+link = "https://www.elitmus.com/jobs?experience_category=all"
+
+
+def parse_data(link):
+    global main_di
+    f = requests.get(link)
+    htmlData = f.text
+    soup = BeautifulSoup(htmlData, "lxml")
+    div = soup.find("div", { "class" : "justify-items-center" })
+    st = str(div).splitlines()
+    # print st
+    count = 1
+    for i in range(0, len(st), 39):
+            try:
+                active_check = st[34+i]+st[35+i]+st[36+i]+st[37+i]+st[38+i]
+                if active_check.find('expired') == -1 :   
+                    salary = st[15+i].split(' ')[1].rstrip('</p>').replace(',','')
+                    
+                    di = OrderedDict()
+                        
+                    try:
+                        if int(salary) > salary_expected:
+                           # print salary, salary_expected
+                           di["<b>Salary (INR)</b>"] = salary
+                    except ValueError:
+                        star_check = st[15+i]+st[16+i]
+                        star_count = star_check.count('fa fa-star golden-star')
+                        if star_count > 3:
+                            di["<b>Salary (INR)</b>"] = str(star_count)+' stars'
+
+                    if di.has_key('<b>Salary (INR)</b>'):
+                        di["<span style='display:None'>"] = str(count)+"</span>"
+                        di["<b>Company name</b>"] = st[6+i].lstrip()
+                        di["<b>Experience required</b>"] = st[14+i].replace('<br/>','').lstrip()
+                        temp = st[10+i].replace('?e_id=','')
+                        di["<b>Job position</b>"] = temp.split(r'=')[2].split(r'>')[1].rstrip('</a')
+                        di["<b>Job location</b>"] = st[13+i].rstrip('<br/>').lstrip()
+                        di["<b>Event date</b>"] = st[33+i].lstrip()
+                        di["<b>Details</b>"] = 'https://www.elitmus.com'+eval(temp.split(r'=')[2].split(r'>')[0]).rstrip('0123456789')
+                        
+                        main_di[count] = di
+                        count += 1
+                 
+            except IndexError:
+                print 'List exhausted!'
+
+print datetime.datetime.now()
+
+main_di = dict()
+temp_main_di = OrderedDict()
+parse_data(link)
+
+# Sorting based on salary/star_count
+count = 1
+for s in sorted(main_di.iteritems(), key=lambda (x, y): y["<b>Salary (INR)</b>"]):
+    temp_main_di[count] = s
+    count += 1
+
+# Creating list for mail content
+main_ls = []
+for k, v in temp_main_di.items():
+    for k1, v1 in v[1].items():
+        main_ls.append(k1+': '+v1)
+    main_ls.append('\n')
+
+# Sending mail
+if len(temp_main_di) != 0:
+    with open('google_app_pw.txt') as f:
+        google_app_pw = f.readlines()
+    
+    to_email = google_app_pw[0].rstrip('\n')
+    yag = yagmail.SMTP(to_email, google_app_pw[1])
+
+    try:
+        mail_subject = 'Total '+str(len(temp_main_di))+' active elitmus jobs above INR '+str("{:,}".format(salary_expected))
+        yag.send(to_email, mail_subject, main_ls)
+        print 'Mail sent!'
+    except Exception, e:
+        print 'Error:', e
+else:
+    print 'No jobs under given criteria!'
+
+print datetime.datetime.now()
+
