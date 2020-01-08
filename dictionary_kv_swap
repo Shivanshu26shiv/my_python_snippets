@@ -2,34 +2,22 @@
 # inpd={'a':2,'c':1,'b':2,'e':1,'f':3}   
 # Output dictionary: {1: ['c', 'e'], 2: ['a', 'b'], 3: 'f'}
 
-inpd={'a':2,'c':1,'b':2,'e':1,'f':3}   
-inpd_sorted=sorted(inpd.items(), key=lambda x: x[1])
-
 from collections import OrderedDict
-dict1=OrderedDict()
-for i in inpd_sorted:
-    dict1[i[0]]=i[1]
+def losless_dict_kv_swapper(inpd):
+    inpd_sorted=sorted(inpd.items(), key=lambda x: x[1])
+    ordered_d = OrderedDict((i[0], i[1]) for i in inpd_sorted)
 
-myvalue=dict1.values()
-temp=myvalue[0]
-mykey=dict1.keys()
-mycount=0
-dict2={}
-ls=[]
+    counter=0
+    output_d={}
+    temp_list=[]
+    temp=ordered_d.values()[0]
 
-for elem in myvalue:
-    if elem==temp: pass
-    else: ls=[]
+    for counter, elem in enumerate(ordered_d.values()):
+        temp_list=[] if elem != temp else temp_list
+        temp_list.append(ordered_d.keys()[counter])
+        output_d[elem]=temp_list[0] if len(temp_list)==1 else temp_list
+        temp=elem
+    return output_d
 
-    ls.append(mykey[mycount])
-    
-    if len(ls)==1: dict2[elem]=ls[0]
-    else: dict2[elem]=ls
-        
-    temp=elem
-    mycount+=1
-
-print 'Input  dictionary: {}'.format(inpd)
-print 'Output dictionary: {}'.format(dict2)
-
-# Output dictionary: {1: ['c', 'e'], 2: ['a', 'b'], 3: 'f'}
+inpd={'a':2,'c':1,'b':2,'e':1,'f':3}
+print(losless_dict_kv_swapper(inpd))
